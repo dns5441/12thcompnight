@@ -2,37 +2,97 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The 12th Composer’s Night | 사이트 준비 중</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101010">
+  <meta name="description" content="한양대학교 예체능대학 실용음악학과 제12회 작곡의 밤">
+  <title>제12회 작곡의 밤</title>
   <style>
+    :root { color-scheme: dark; --ink: #101010; --paper: #f2eee7; --muted: #aaa6a0; --accent: #37d4d0; font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
     * { box-sizing: border-box; }
     html, body { min-height: 100%; }
-    body {
-      margin: 0;
-      display: grid;
-      place-items: center;
-      min-height: 100vh;
-      padding: 24px;
-      background: #000;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-      text-align: center;
+    body { margin: 0; min-height: 100dvh; background: var(--ink); color: var(--paper); }
+    .app { min-height: 100dvh; display: flex; flex-direction: column; padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+    header { flex: none; height: 58px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #ffffff1c; }
+    header span { font-size: 11px; font-weight: 750; letter-spacing: .16em; }
+    main { flex: 1; display: flex; justify-content: center; }
+    .panel { display: none; width: 100%; }
+    .panel.active { display: flex; }
+    #poster-panel { justify-content: center; align-items: flex-start; padding: 16px 14px 24px; }
+    #poster-panel img { display: block; width: min(100%, 650px); height: auto; object-fit: contain; }
+    #placeholder-panel { align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
+    .placeholder-content { width: 100%; max-width: 500px; }
+    .eyebrow { margin: 0 0 18px; color: var(--muted); font-size: 11px; letter-spacing: .22em; }
+    h1 { margin: 0; font-size: clamp(30px, 8vw, 48px); font-weight: 550; letter-spacing: -.045em; }
+    .message { margin: 18px 0 0; color: #d0ccc6; font-size: 15px; }
+    .logo { display: block; width: 88px; height: 88px; object-fit: cover; border-radius: 50%; margin: 32px auto 0; }
+    .affiliation { margin: 15px 0 0; color: #8f8b85; font-size: 12px; line-height: 1.8; letter-spacing: .04em; }
+    nav { position: fixed; z-index: 5; inset: auto 0 0; display: grid; grid-template-columns: repeat(3, 1fr); padding: 5px 8px calc(5px + env(safe-area-inset-bottom)); background: #181818f5; border-top: 1px solid #ffffff24; backdrop-filter: blur(16px); }
+    nav button { appearance: none; border: 0; background: transparent; color: #9a9690; min-height: 54px; padding: 8px 4px 6px; font: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 5px; align-items: center; justify-content: center; }
+    nav button[aria-selected="true"] { color: var(--paper); }
+    nav button[aria-selected="true"]::before { content: ""; position: absolute; top: 0; width: 28px; height: 2px; background: var(--accent); }
+    .tab-icon { font-size: 17px; line-height: 1; }
+    .tab-label { font-size: 10px; font-weight: 650; letter-spacing: .04em; }
+    @media (min-width: 700px) {
+      .app { padding-bottom: 0; }
+      header { height: 64px; }
+      main { padding-bottom: 72px; }
+      #poster-panel { padding-top: 24px; }
+      #placeholder-panel { padding-bottom: 100px; }
+      nav { inset: auto 50% 18px auto; transform: translateX(50%); width: min(420px, calc(100% - 32px)); border: 1px solid #ffffff24; border-radius: 14px; padding-bottom: 5px; }
     }
-    main { max-width: 640px; }
-    .logo { display: block; width: 104px; height: 104px; object-fit: cover; border-radius: 50%; margin: 38px auto 0; }
-    .eyebrow { margin: 0 0 20px; color: #aaa; font-size: 12px; letter-spacing: .28em; }
-    h1 { margin: 0; font-size: clamp(30px, 7vw, 56px); font-weight: 500; letter-spacing: -.04em; }
-    .message { margin: 22px 0 0; color: #ccc; font-size: 16px; letter-spacing: .02em; }
-    .affiliation { margin: 16px 0 0; color: #888; font-size: 13px; line-height: 1.8; letter-spacing: .04em; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
   </style>
 </head>
 <body>
-  <main>
-    <p class="eyebrow">THE 12TH COMPOSER’S NIGHT</p>
-    <h1>제12회 작곡의 밤</h1>
-    <div class="message">사이트 준비 중입니다.</div>
-    <img class="logo" src="composer-night-assets/hanyang-symbol.png" alt="한양대학교 파란색 원형 심볼">
-    <p class="affiliation">한양대학교 예체능대학 실용음악과</p>
-  </main>
+  <div class="app">
+    <header><span>THE 12TH COMPOSER’S NIGHT</span></header>
+    <main>
+      <section class="panel active" id="poster-panel" role="tabpanel" aria-labelledby="tab-poster">
+        <img src="poster1105-mobile.jpg" alt="제12회 작곡의 밤 BOUNDARIES 포스터" fetchpriority="high">
+      </section>
+      <section class="panel" id="placeholder-panel" role="tabpanel" aria-labelledby="tab-setlist" hidden>
+        <div class="placeholder-content">
+          <p class="eyebrow">THE 12TH COMPOSER’S NIGHT</p>
+          <h1>제12회 작곡의 밤</h1>
+          <p class="message">사이트 준비 중입니다.</p>
+          <img class="logo" src="composer-night-assets/hanyang-symbol.png" alt="한양대학교 심볼">
+          <p class="affiliation">한양대학교 예체능대학 실용음악과</p>
+        </div>
+      </section>
+    </main>
+    <nav role="tablist" aria-label="메인 메뉴">
+      <button id="tab-poster" type="button" role="tab" aria-selected="true" aria-controls="poster-panel"><span class="tab-icon" aria-hidden="true">▧</span><span class="tab-label">포스터</span></button>
+      <button id="tab-setlist" type="button" role="tab" aria-selected="false" aria-controls="placeholder-panel" tabindex="-1"><span class="tab-icon" aria-hidden="true">♫</span><span class="tab-label">셋 리스트</span></button>
+      <button id="tab-more" type="button" role="tab" aria-selected="false" aria-controls="placeholder-panel" tabindex="-1"><span class="tab-icon" aria-hidden="true">···</span><span class="tab-label">???</span></button>
+    </nav>
+  </div>
+  <script>
+    const tabs = [...document.querySelectorAll('[role="tab"]')];
+    const posterPanel = document.getElementById('poster-panel');
+    const placeholderPanel = document.getElementById('placeholder-panel');
+    function selectTab(tab) {
+      tabs.forEach(item => {
+        const selected = item === tab;
+        item.setAttribute('aria-selected', String(selected));
+        item.tabIndex = selected ? 0 : -1;
+      });
+      const showPoster = tab.id === 'tab-poster';
+      posterPanel.classList.toggle('active', showPoster);
+      posterPanel.hidden = !showPoster;
+      placeholderPanel.classList.toggle('active', !showPoster);
+      placeholderPanel.hidden = showPoster;
+    }
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => selectTab(tab));
+      tab.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        event.preventDefault();
+        const offset = event.key === 'ArrowRight' ? 1 : -1;
+        const next = tabs[(index + offset + tabs.length) % tabs.length];
+        selectTab(next);
+        next.focus();
+      });
+    });
+  </script>
 </body>
 </html>
