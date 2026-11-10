@@ -19,13 +19,45 @@
     .panel.active { display: flex; }
     #poster-panel { justify-content: center; align-items: flex-start; padding: 16px 14px 24px; }
     #poster-panel img { display: block; width: min(100%, 650px); height: auto; object-fit: contain; }
-    #placeholder-panel { align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
-    .placeholder-content { width: 100%; max-width: 500px; }
+    #setlist-panel { padding: 24px 18px 42px; }
+    #setlist-panel.active { display: block; }
+    #setlist-panel[hidden], #info-panel[hidden] { display: none; }
+    .placeholder-content { width: 100%; max-width: 500px; margin: 0 auto; text-align: center; padding: 48px 12px; }
+    .setlist-content { width: 100%; max-width: 760px; margin: 0 auto; }
+    .setlist-heading { margin: 0 auto 28px; max-width: 320px; text-align: center; }
+    .setlist-heading p { margin: 0 0 9px; color: var(--muted); font-size: 10px; letter-spacing: .24em; }
+    .setlist-heading h1 { margin: 0; font-size: clamp(26px, 7vw, 36px); font-weight: 650; letter-spacing: .02em; }
+    .setlist-heading::after { content: ""; display: block; height: 1px; margin-top: 16px; background: #f2eee780; }
+    .setlist-part { margin: 0 0 30px; }
+    .setlist-part h2 { display: flex; align-items: center; gap: 12px; margin: 0 0 15px; color: #f2eee7; font-size: 13px; font-weight: 700; letter-spacing: .16em; }
+    .setlist-part h2::after { content: ""; height: 1px; flex: 1; background: #ffffff2b; }
+    .track-list { display: grid; gap: 12px; }
+    .track { --glow: #ff2e9b; position: relative; overflow: hidden; padding: 18px 16px 19px; border: 1px solid #ffffff18; border-radius: 4px; background: linear-gradient(135deg, #14121a 0%, #0c0c0e 68%); }
+    .track::after { content: ""; position: absolute; top: 0; right: 0; width: 76px; height: 50px; opacity: .65; background-image: radial-gradient(var(--glow) 1px, transparent 1.5px); background-size: 5px 5px; mask-image: linear-gradient(135deg, #000 10%, transparent 75%); pointer-events: none; }
+    .track.green { --glow: #51e6ab; }
+    .track-top { display: flex; align-items: baseline; gap: 10px; }
+    .track-number { flex: none; color: #fff; font-size: 20px; font-weight: 700; }
+    .track h3 { margin: 0; color: var(--glow); font-size: clamp(23px, 7vw, 32px); font-weight: 800; line-height: 1.06; letter-spacing: -.025em; text-shadow: 0 0 18px color-mix(in srgb, var(--glow) 58%, transparent); }
+    .track h3 small { display: block; margin-top: 3px; font-size: .68em; }
+    .track-by { margin: 8px 0 0 36px; color: #fff; font-size: 13px; font-weight: 700; }
+    .track-roles { margin: 14px 0 0 36px; color: #d2cfcc; font-size: 10px; font-weight: 600; line-height: 1.7; }
+    .track-desc { margin: 12px 0 0 36px; color: #dedbd7; font-family: "Apple SD Gothic Neo", "Noto Serif KR", serif; font-size: 14px; line-height: 1.8; word-break: keep-all; }
+    .track-live { color: #fff; }
     .eyebrow { margin: 0 0 18px; color: var(--muted); font-size: 11px; letter-spacing: .22em; }
     h1 { margin: 0; font-size: clamp(30px, 8vw, 48px); font-weight: 550; letter-spacing: -.045em; }
     .message { margin: 18px 0 0; color: #d0ccc6; font-size: 15px; }
     .logo { display: block; width: 88px; height: 88px; object-fit: cover; border-radius: 50%; margin: 32px auto 0; }
     .affiliation { margin: 15px 0 0; color: #8f8b85; font-size: 12px; line-height: 1.8; letter-spacing: .04em; }
+    #info-panel { align-items: center; justify-content: center; padding: 36px 22px 44px; }
+    .info-content { width: 100%; max-width: 540px; }
+    .info-content h1 { font-size: clamp(30px, 8vw, 42px); }
+    .info-title { margin: 0 0 12px; color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: .2em; }
+    .event-details { margin: 30px 0 0; border-top: 1px solid #ffffff28; }
+    .event-details div { display: grid; grid-template-columns: 72px 1fr; gap: 12px; padding: 15px 0; border-bottom: 1px solid #ffffff28; }
+    .event-details dt { color: var(--muted); font-size: 12px; }
+    .event-details dd { margin: 0; font-size: 14px; line-height: 1.7; }
+    .composer-list { margin: 26px 0 0; color: #d0ccc6; font-size: 13px; line-height: 2; }
+    .composer-list strong { display: block; margin-bottom: 6px; color: var(--paper); font-size: 12px; }
     nav { position: fixed; z-index: 5; inset: auto 0 0; display: grid; grid-template-columns: repeat(3, 1fr); padding: 5px 8px calc(5px + env(safe-area-inset-bottom)); background: #181818f5; border-top: 1px solid #ffffff24; backdrop-filter: blur(16px); }
     nav button { appearance: none; border: 0; background: transparent; color: #9a9690; min-height: 54px; padding: 8px 4px 6px; font: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 5px; align-items: center; justify-content: center; }
     nav button[aria-selected="true"] { color: var(--paper); }
@@ -37,7 +69,9 @@
       header { height: 64px; }
       main { padding-bottom: 72px; }
       #poster-panel { padding-top: 24px; }
-      #placeholder-panel { padding-bottom: 100px; }
+      #setlist-panel { padding: 38px 28px 110px; }
+      .setlist-part { margin-bottom: 38px; }
+      .track-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       nav { inset: auto 50% 18px auto; transform: translateX(50%); width: min(420px, calc(100% - 32px)); border: 1px solid #ffffff24; border-radius: 14px; padding-bottom: 5px; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
@@ -48,28 +82,43 @@
     <header><span>THE 12TH COMPOSER’S NIGHT</span></header>
     <main>
       <section class="panel active" id="poster-panel" role="tabpanel" aria-labelledby="tab-poster">
-        <img src="poster1105-mobile.jpg" alt="제12회 작곡의 밤 BOUNDARIES 포스터" fetchpriority="high">
+        <img src="poster-mobile-optimized.jpg" alt="제12회 작곡의 밤 BOUNDARIES 포스터" fetchpriority="high">
       </section>
-      <section class="panel" id="placeholder-panel" role="tabpanel" aria-labelledby="tab-setlist" hidden>
-        <div class="placeholder-content">
-          <p class="eyebrow">THE 12TH COMPOSER’S NIGHT</p>
-          <h1>제12회 작곡의 밤</h1>
-          <p class="message">사이트 준비 중입니다.</p>
-          <img class="logo" src="composer-night-assets/hanyang-symbol.png" alt="한양대학교 심볼">
-          <p class="affiliation">한양대학교 예체능대학 실용음악과</p>
+      <section class="panel" id="setlist-panel" role="tabpanel" aria-labelledby="tab-setlist" hidden>
+        <div class="setlist-content">
+          <div class="setlist-heading"><p>THE 12TH COMPOSER’S NIGHT</p><h1>SET LIST</h1></div>
+          <section class="setlist-part" aria-labelledby="part-one"><h2 id="part-one">1부</h2><div class="track-list">
+            <article class="track"><div class="track-top"><span class="track-number">1.</span><h3>CAPTIWALL</h3></div><p class="track-by">by 신우진</p><p class="track-roles"><span class="track-live">LIVE · 신우진</span></p><p class="track-desc">사람과 사람 사이의 경계가 점차 강해지고 충돌하면서, 결국 혼돈과 고립으로 이어지는 현대 사회의 모습을 비정형적이고 실험적인 사운드로 표현합니다.</p></article>
+            <article class="track"><div class="track-top"><span class="track-number">2.</span><h3>0의시간</h3></div><p class="track-by">by 비둘기22 (박하 &amp; 나서연)</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P1-박하&nbsp; P2-이진솔&nbsp; V-이도연, 권이삭</p><p class="track-desc">“진정한 삶과 죽음은 무엇인가에 대한 질문에서 시작한 고찰. 우리가 내린 정의는 진정한 삶과 죽음은 육체적으로 오는 것이 아닌 마음에서 일어나는 것이다.”</p></article>
+            <article class="track green"><div class="track-top"><span class="track-number">3.</span><h3>SEXY BOY</h3></div><p class="track-by">by 추동화, 안경재</p><p class="track-roles"><span class="track-live">LIVE · 안경재&nbsp; V-권지환</span></p><p class="track-desc">한 사람 안에 공존하는 모범생과 문제아의 상반된 모습을 주제로, 특정한 상대를 만나면서 억눌렸던 충동적이고 자유로운 본성이 드러나는 과정을 표현한 곡입니다.</p></article>
+          </div></section>
+          <section class="setlist-part" aria-labelledby="part-two"><h2 id="part-two">2부</h2><div class="track-list">
+            <article class="track"><div class="track-top"><span class="track-number">4.</span><h3>낯선 옷</h3></div><p class="track-by">by 어른이들 (박찬솔)</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-박찬솔&nbsp; V-신정원</p><p class="track-desc">“우리는 언제부터 어른이 되었을까?”라는 질문을 통해 어른이 되어서도 마음속에 남아 있는 아이의 모습과 성장의 과정을 담은 곡.</p></article>
+            <article class="track green"><div class="track-top"><span class="track-number">5.</span><h3>잔상 <small>(AFTERIMAGE)</small></h3></div><p class="track-by">by 주하오린</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-이진솔</p><p class="track-desc">《잔상》은 ‘경계의 모호함’을 주제로, 현실의 균열 속으로 꿈이 스며들어 하나로 융합되는 과정을 담았습니다. “지금 우리가 느끼고 있는 것은 과연 현실일까요, 아니면 꿈일까요?”</p></article>
+            <article class="track"><div class="track-top"><span class="track-number">6.</span><h3>GOING ON</h3></div><p class="track-by">by 황희문</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-박찬솔&nbsp; V-서은</p><p class="track-desc">익숙한 신스팝에서 출발해 실험적인 전자 사운드로 확장되는 곡으로, 익숙함과 낯섦 사이에서 새로운 시작을 마주하는 과정을 표현했습니다.</p></article>
+          </div></section>
+          <section class="setlist-part" aria-labelledby="part-three"><h2 id="part-three">3부</h2><div class="track-list">
+            <article class="track green"><div class="track-top"><span class="track-number">7.</span><h3>BEYOND RECALL</h3></div><p class="track-by">by 류원</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-이진솔&nbsp; V-류원</p><p class="track-desc">“지나간 순간은 사라져도, 그 순간이 남긴 감정은 영원히 머물 수 있다는 이야기를 담은 곡입니다.”</p></article>
+            <article class="track"><div class="track-top"><span class="track-number">8.</span><h3>TOO LATE</h3></div><p class="track-by">by 강소희</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-이진솔&nbsp; V-프란 윤민석</p><p class="track-desc">“우정과 사랑 사이, 우리는 언제부터 서로를 다르게 느끼기 시작했을까?”라는 질문에서 출발한 곡. 거창한 사건이 아닌 스치는 1초의 정적과 작은 떨림만으로도 무너지는 마음의 경계, 그 아슬아슬한 순간을 짧은 알앤비 사운드로 담아냈습니다.</p></article>
+            <article class="track"><div class="track-top"><span class="track-number">9.</span><h3>GOOD NEWS</h3></div><p class="track-by">by 김은찬</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-박찬솔&nbsp; V-서은</p><p class="track-desc">경계란 좋고 나쁨을 구분짓는 선이 아니라 질서를 만드는 선입니다.</p></article>
+          </div></section>
         </div>
+      </section>
+      <section class="panel" id="info-panel" role="tabpanel" aria-labelledby="tab-info" hidden>
+        <div class="placeholder-content"><p class="eyebrow">THE 12TH COMPOSER’S NIGHT</p><h1>공연 부록</h1><p class="message">공연이 끝난 뒤 공개됩니다</p><img class="logo" src="composer-night-assets/hanyang-symbol.png" alt="한양대학교 심볼"><p class="affiliation">한양대학교 예체능대학 실용음악과</p></div>
       </section>
     </main>
     <nav role="tablist" aria-label="메인 메뉴">
       <button id="tab-poster" type="button" role="tab" aria-selected="true" aria-controls="poster-panel"><span class="tab-icon" aria-hidden="true">▧</span><span class="tab-label">포스터</span></button>
-      <button id="tab-setlist" type="button" role="tab" aria-selected="false" aria-controls="placeholder-panel" tabindex="-1"><span class="tab-icon" aria-hidden="true">♫</span><span class="tab-label">셋 리스트</span></button>
-      <button id="tab-more" type="button" role="tab" aria-selected="false" aria-controls="placeholder-panel" tabindex="-1"><span class="tab-icon" aria-hidden="true">···</span><span class="tab-label">???</span></button>
+      <button id="tab-setlist" type="button" role="tab" aria-selected="false" aria-controls="setlist-panel" tabindex="-1"><span class="tab-icon" aria-hidden="true">♫</span><span class="tab-label">셋 리스트</span></button>
+      <button id="tab-info" type="button" role="tab" aria-selected="false" aria-controls="info-panel" tabindex="-1"><span class="tab-icon" aria-hidden="true">⌖</span><span class="tab-label">공연 부록</span></button>
     </nav>
   </div>
   <script>
     const tabs = [...document.querySelectorAll('[role="tab"]')];
     const posterPanel = document.getElementById('poster-panel');
-    const placeholderPanel = document.getElementById('placeholder-panel');
+    const setlistPanel = document.getElementById('setlist-panel');
+    const infoPanel = document.getElementById('info-panel');
     function selectTab(tab) {
       tabs.forEach(item => {
         const selected = item === tab;
@@ -77,10 +126,13 @@
         item.tabIndex = selected ? 0 : -1;
       });
       const showPoster = tab.id === 'tab-poster';
+      const showInfo = tab.id === 'tab-info';
       posterPanel.classList.toggle('active', showPoster);
       posterPanel.hidden = !showPoster;
-      placeholderPanel.classList.toggle('active', !showPoster);
-      placeholderPanel.hidden = showPoster;
+      setlistPanel.classList.toggle('active', !showPoster && !showInfo);
+      setlistPanel.hidden = showPoster || showInfo;
+      infoPanel.classList.toggle('active', showInfo);
+      infoPanel.hidden = !showInfo;
     }
     tabs.forEach((tab, index) => {
       tab.addEventListener('click', () => selectTab(tab));
