@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101010">
+  <meta name="description" content="한양대학교 예체능대학 실용음악학과 제12회 작곡의 밤">
+  <title>제12회 작곡의 밤</title>
+  <style>
+    :root { color-scheme: dark; --ink: #101010; --paper: #f2eee7; --muted: #aaa6a0; --accent: #37d4d0; font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body { margin: 0; min-height: 100dvh; background: var(--ink); color: var(--paper); }
+    .app { min-height: 100dvh; display: flex; flex-direction: column; padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+    header { flex: none; height: 58px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #ffffff1c; }
+    header span { font-size: 11px; font-weight: 750; letter-spacing: .16em; }
+    main { flex: 1; display: flex; justify-content: center; }
+    .panel { display: none; width: 100%; }
+    .panel.active { display: flex; }
+    #poster-panel { justify-content: center; align-items: flex-start; padding: 16px 14px 24px; }
+    #poster-panel img { display: block; width: min(100%, 650px); height: auto; object-fit: contain; }
+    #setlist-panel { padding: 24px 18px 42px; }
+    #setlist-panel.active { display: block; }
+    #setlist-panel[hidden], #info-panel[hidden] { display: none; }
+    .placeholder-content { width: 100%; max-width: 500px; margin: 0 auto; text-align: center; padding: 48px 12px; }
+    .setlist-content { width: 100%; max-width: 760px; margin: 0 auto; }
+    .setlist-heading { margin: 0 auto 28px; max-width: 320px; text-align: center; }
+    .setlist-heading p { margin: 0 0 9px; color: var(--muted); font-size: 10px; letter-spacing: .24em; }
+    .setlist-heading h1 { margin: 0; font-size: clamp(26px, 7vw, 36px); font-weight: 650; letter-spacing: .02em; }
+    .setlist-heading::after { content: ""; display: block; height: 1px; margin-top: 16px; background: #f2eee780; }
+    .setlist-part { margin: 0 0 30px; }
+    .setlist-part h2 { display: flex; align-items: center; gap: 12px; margin: 0 0 15px; color: #f2eee7; font-size: 13px; font-weight: 700; letter-spacing: .16em; }
+    .setlist-part h2::after { content: ""; height: 1px; flex: 1; background: #ffffff2b; }
+    .track-list { display: grid; gap: 12px; }
+    .track { --glow: #ff2e9b; position: relative; overflow: hidden; padding: 18px 16px 19px; border: 1px solid #ffffff18; border-radius: 4px; background: linear-gradient(135deg, #14121a 0%, #0c0c0e 68%); }
+    .track::after { content: ""; position: absolute; top: 0; right: 0; width: 76px; height: 50px; opacity: .65; background-image: radial-gradient(var(--glow) 1px, transparent 1.5px); background-size: 5px 5px; mask-image: linear-gradient(135deg, #000 10%, transparent 75%); pointer-events: none; }
+    .track.green { --glow: #51e6ab; }
+    .track-top { display: flex; align-items: baseline; gap: 10px; }
+    .track-number { flex: none; color: #fff; font-size: 20px; font-weight: 700; }
+    .track h3 { margin: 0; color: var(--glow); font-size: clamp(23px, 7vw, 32px); font-weight: 800; line-height: 1.06; letter-spacing: -.025em; text-shadow: 0 0 18px color-mix(in srgb, var(--glow) 58%, transparent); }
+    .track h3 small { display: block; margin-top: 3px; font-size: .68em; }
+    .track-by { margin: 8px 0 0 36px; color: #fff; font-size: 13px; font-weight: 700; }
+    .track-roles { margin: 14px 0 0 36px; color: #d2cfcc; font-size: 10px; font-weight: 600; line-height: 1.7; }
+    .track-desc { margin: 12px 0 0 36px; color: #dedbd7; font-family: "Apple SD Gothic Neo", "Noto Serif KR", serif; font-size: 14px; line-height: 1.8; word-break: keep-all; }
+    .track-live { color: #fff; }
+    .eyebrow { margin: 0 0 18px; color: var(--muted); font-size: 11px; letter-spacing: .22em; }
+    h1 { margin: 0; font-size: clamp(30px, 8vw, 48px); font-weight: 550; letter-spacing: -.045em; }
+    .message { margin: 18px 0 0; color: #d0ccc6; font-size: 15px; }
+    .logo { display: block; width: 88px; height: 88px; object-fit: cover; border-radius: 50%; margin: 32px auto 0; }
+    .affiliation { margin: 15px 0 0; color: #8f8b85; font-size: 12px; line-height: 1.8; letter-spacing: .04em; }
+    #info-panel { align-items: center; justify-content: center; padding: 36px 22px 44px; }
+    #info-panel { --part-color: #54252a; flex-direction: column; justify-content: flex-start; align-items: stretch; height: calc(100dvh - 58px - 68px - env(safe-area-inset-bottom)); min-height: 320px; padding: 0; overflow: hidden; background-color: var(--part-color); transition: background-color 550ms ease; }
+    #info-panel[data-team="1"] { --part-color: #54252a; }
+    #info-panel[data-team="2"] { --part-color: #5d282e; }
+    #info-panel[data-team="3"] { --part-color: #662b32; }
+    #info-panel[data-team="4"] { --part-color: #1e4936; }
+    #info-panel[data-team="5"] { --part-color: #23533d; }
+    #info-panel[data-team="6"] { --part-color: #285d45; }
+    #info-panel[data-team="7"] { --part-color: #253858; }
+    #info-panel[data-team="8"] { --part-color: #2b4168; }
+    #info-panel[data-team="9"] { --part-color: #314a78; }
+    #info-panel .appendix-closed { display: none; }
+    #info-panel:not([data-published="1"]) { background-color: var(--ink); }
+    #info-panel:not([data-published="1"]) .appendix-closed { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 22px; }
+    #info-panel:not([data-published="1"]) .team-strip,
+    #info-panel:not([data-published="1"]) .song-description { display: none; }
+    .team-strip { flex: 0 0 18%; min-height: 104px; max-height: 150px; display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; padding: 12px 14px; border-bottom: 1px solid #ffffff40; background-color: var(--part-color); transition: background-color 550ms ease; scrollbar-width: thin; scrollbar-color: #ffffff70 transparent; }
+    .team-button { flex: 0 0 54px; display: grid; place-items: center; border: 1px solid #ffffff26; border-radius: 10px; background: #181818; color: #aaa6a0; font: inherit; font-size: 14px; cursor: pointer; writing-mode: vertical-rl; }
+    .team-button[aria-pressed="true"] { border-color: var(--accent); background: #37d4d014; color: var(--paper); }
+    .song-description { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 24px 22px 36px; background-color: var(--part-color); transition: background-color 550ms ease; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+    .song-description article { width: 100%; max-width: 680px; margin: 0 auto; }
+    .song-kicker { margin: 0 0 10px; color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: .18em; }
+    .song-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .song-hint { flex: none; color: #ffffffad; font-size: 10px; font-weight: 500; letter-spacing: 0; }
+    .song-description h1 { font-size: clamp(26px, 7vw, 36px); }
+    .song-by { margin: 8px 0 0; color: #ffffffc7; font-size: 13px; font-weight: 600; }
+    .song-theme { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid #ffffff40; color: var(--paper); font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+    .song-copy { margin-top: 24px; color: #d0ccc6; font-size: 15px; line-height: 1.95; white-space: pre-line; }
+    .song-copy p { margin: 0 0 1.2em; }
+    .song-copy h2 { margin: 28px 0 12px; color: var(--paper); font-size: 17px; font-weight: 650; letter-spacing: -.02em; }
+    .song-copy h2:first-child { margin-top: 0; }
+    .song-copy h3 { margin: 22px 0 8px; color: var(--paper); font-size: 14px; font-weight: 650; }
+    .ai-chat { display: flex; flex-direction: column; gap: 12px; margin: 14px 0 24px; }
+    .chat-message { max-width: 90%; padding: 12px 14px; border-radius: 14px; font-size: 14px; line-height: 1.75; white-space: normal; }
+    .chat-message p { margin: 0 0 9px; }
+    .chat-message p:last-child { margin-bottom: 0; }
+    .chat-human { align-self: flex-end; border: 1px solid #ffffff30; border-bottom-right-radius: 4px; background: #171717e8; color: var(--paper); }
+    .chat-ai { align-self: flex-start; border-bottom-left-radius: 4px; background: #f2eee7; color: #242321; }
+    .chat-speaker { display: block; margin-bottom: 5px; font-size: 10px; font-weight: 750; letter-spacing: .05em; }
+    .chat-human .chat-speaker { color: var(--accent); }
+    .chat-ai .chat-speaker { color: #716c65; }
+    .info-content { width: 100%; max-width: 540px; }
+    .info-content h1 { font-size: clamp(30px, 8vw, 42px); }
+    .info-title { margin: 0 0 12px; color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: .2em; }
+    .event-details { margin: 30px 0 0; border-top: 1px solid #ffffff28; }
+    .event-details div { display: grid; grid-template-columns: 72px 1fr; gap: 12px; padding: 15px 0; border-bottom: 1px solid #ffffff28; }
+    .event-details dt { color: var(--muted); font-size: 12px; }
+    .event-details dd { margin: 0; font-size: 14px; line-height: 1.7; }
+    .composer-list { margin: 26px 0 0; color: #d0ccc6; font-size: 13px; line-height: 2; }
+    .composer-list strong { display: block; margin-bottom: 6px; color: var(--paper); font-size: 12px; }
+    nav { position: fixed; z-index: 5; inset: auto 0 0; display: grid; grid-template-columns: repeat(3, 1fr); padding: 5px 8px calc(5px + env(safe-area-inset-bottom)); background: #181818f5; border-top: 1px solid #ffffff24; backdrop-filter: blur(16px); }
+    nav button { appearance: none; border: 0; background: transparent; color: #9a9690; min-height: 54px; padding: 8px 4px 6px; font: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 5px; align-items: center; justify-content: center; }
+    nav button[aria-selected="true"] { color: var(--paper); }
+    nav button[aria-selected="true"]::before { content: ""; position: absolute; top: 0; width: 28px; height: 2px; background: var(--accent); }
+    .tab-icon { font-size: 17px; line-height: 1; }
+    .tab-label { font-size: 10px; font-weight: 650; letter-spacing: .04em; }
+    @media (min-width: 700px) {
+      .app { padding-bottom: 0; }
+      header { height: 64px; }
+      main { padding-bottom: 72px; }
+      #poster-panel { padding-top: 24px; }
+      #setlist-panel { padding: 38px 28px 110px; }
+      .setlist-part { margin-bottom: 38px; }
+      .track-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .team-strip { justify-content: center; }
+      nav { inset: auto 50% 18px auto; transform: translateX(50%); width: min(420px, calc(100% - 32px)); border: 1px solid #ffffff24; border-radius: 14px; padding-bottom: 5px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header><span>THE 12TH COMPOSER’S NIGHT</span></header>
+    <main>
+      <section class="panel active" id="poster-panel" role="tabpanel" aria-labelledby="tab-poster">
+        <img src="poster1112.jpg" alt="제12회 작곡의 밤 BOUNDARIES 포스터" fetchpriority="high">
+      </section>
+      <section class="panel" id="setlist-panel" role="tabpanel" aria-labelledby="tab-setlist" hidden>
+        <div class="setlist-content">
+          <div class="setlist-heading"><p>THE 12TH COMPOSER’S NIGHT</p><h1>SET LIST</h1></div>
+          <section class="setlist-part" aria-labelledby="part-one"><h2 id="part-one">1부</h2><div class="track-list">
+            <article class="track"><div class="track-top"><span class="track-number">1.</span><h3>CAPTIWALL</h3></div><p class="track-by">by 신우진</p><p class="track-roles"><span class="track-live">LIVE-신우진</span></p><p class="track-desc">사람과 사람 사이의 경계가 점차 강해지고 충돌하면서, 결국 혼돈과 고립으로 이어지는 현대 사회의 모습을 비정형적이고 실험적인 사운드로 표현합니다.</p></article>
+            <article class="track"><div class="track-top"><span class="track-number">2.</span><h3>0의시간</h3></div><p class="track-by">by 비둘기22 (박하 &amp; 나서연)</p><p class="track-roles">M-나서연&nbsp; P1-박하&nbsp; P2-이진솔&nbsp; Vc-이휘명&nbsp; <br>D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; V-이도원, 권이삭</p><p class="track-desc">“진정한 삶과 죽음은 무엇인가에 대한 질문에서 시작한 고찰. 우리가 내린 정의는 진정한 삶과 죽음은 육체적으로 오는 것이 아닌 마음에서 일어나는 것이다.”</p></article>
+            <article class="track green"><div class="track-top"><span class="track-number">3.</span><h3>SEXY BOY</h3></div><p class="track-by">by 추동화, 안겸재</p><p class="track-roles"><span class="track-live">LIVE-안겸재&nbsp; V-권지환</span></p><p class="track-desc">한 사람 안에 공존하는 모범생과 문제아의 상반된 모습을 주제로, 특정한 상대를 만나면서 억눌렸던 충동적이고 자유로운 본성이 드러나는 과정을 표현한 곡입니다.</p></article>
+          </div></section>
+          <section class="setlist-part" aria-labelledby="part-two"><h2 id="part-two">2부</h2><div class="track-list">
+            <article class="track"><div class="track-top"><span class="track-number">4.</span><h3>낯선 옷</h3></div><p class="track-by">by 박찬솔</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-박찬솔&nbsp; V-신정원</p><p class="track-desc">“우리는 언제부터 어른이 되었을까?”라는 질문을 통해 어른이 되어서도 마음속에 남아 있는 아이의 모습과 성장의 과정을 담은 곡.</p></article>
+            <article class="track green"><div class="track-top"><span class="track-number">5.</span><h3>잔상 <small>(AFTERIMAGE)</small></h3></div><p class="track-by">by 주하오린</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-이진솔</p><p class="track-desc">《잔상》은 ‘경계의 모호함’을 주제로, 현실의 균열 속으로 꿈이 스며들어 하나로 융합되는 과정을 담았습니다. “지금 우리가 느끼고 있는 것은 과연 현실일까요, 아니면 꿈일까요?”</p></article>
+            <article class="track"><div class="track-top"><span class="track-number">6.</span><h3>GOING ON</h3></div><p class="track-by">by 황희문</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-이진솔&nbsp; V-서은</p><p class="track-desc">익숙한 신스팝에서 출발해 실험적인 전자 사운드로 확장되는 곡으로, 익숙함과 낯섦 사이에서 새로운 시작을 마주하는 과정을 표현했습니다.</p></article>
+          </div></section>
+          <section class="setlist-part" aria-labelledby="part-three"><h2 id="part-three">3부</h2><div class="track-list">
+            <article class="track green"><div class="track-top"><span class="track-number">7.</span><h3>BEYOND RECALL</h3></div><p class="track-by">by 루원</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-이진솔&nbsp; V-루원</p><p class="track-desc">“지나간 순간은 사라져도, 그 순간이 남긴 감정은 영원히 머물 수 있다는 이야기를 담은 곡입니다.”</p></article>
+            <article class="track"><div class="track-top"><span class="track-number">8.</span><h3>TOO LATE</h3></div><p class="track-by">by 강소희</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-이진솔&nbsp; <br>V-프란시스카, 윤민석</p><p class="track-desc">“우정과 사랑 사이, 우리는 언제부터 서로를 다르게 느끼기 시작했을까?”라는 질문에서 출발한 곡. 거창한 사건이 아닌 스치는 1초의 정적과 작은 떨림만으로도 무너지는 마음의 경계, 그 아슬아슬한 순간을 짧은 알앤비 사운드로 담아냈습니다.</p></article>
+            <article class="track"><div class="track-top"><span class="track-number">9.</span><h3>GOOD NEWS</h3></div><p class="track-by">by 김은찬</p><p class="track-roles">D-신지민&nbsp; B-신현수&nbsp; G-김성현&nbsp; P-이진솔&nbsp; <br>V-이도원, 권지환, 신준희, 진솔미</p><p class="track-desc">경계란 좋고 나쁨을 구분짓는 선이 아니라 질서를 만드는 선입니다.</p></article>
+          </div></section>
+        </div>
+      </section>
+      <section class="panel" id="info-panel" role="tabpanel" aria-labelledby="tab-info" hidden>
+        <div class="appendix-closed">
+          <div class="placeholder-content">
+            <p class="eyebrow">제12회 작곡의 밤</p>
+            <h1>공연 부록</h1>
+            <p class="message">공연이 끝난 후 공개됩니다</p>
+            <img class="logo" src="composer-night-assets/hanyang-symbol.png" alt="한양대학교 심볼">
+            <p class="affiliation">한양대학교 예체능대학 실용음악학과</p>
+          </div>
+        </div>
+        <div class="team-strip" role="tablist" aria-label="곡 설명 팀 선택" id="team-strip"></div>
+        <div class="song-description" id="song-description" aria-live="polite"></div>
+      </section>
+    </main>
+    <nav role="tablist" aria-label="메인 메뉴">
+      <button id="tab-poster" type="button" role="tab" aria-selected="true" aria-controls="poster-panel"><span class="tab-icon" aria-hidden="true">▧</span><span class="tab-label">포스터</span></button>
+      <button id="tab-setlist" type="button" role="tab" aria-selected="false" aria-controls="setlist-panel" tabindex="-1"><span class="tab-icon" aria-hidden="true">♫</span><span class="tab-label">셋 리스트</span></button>
+      <button id="tab-info" type="button" role="tab" aria-selected="false" aria-controls="info-panel" tabindex="-1"><span class="tab-icon" aria-hidden="true">⌖</span><span class="tab-label">공연 부록</span></button>
+    </nav>
+  </div>
+  <script>
+    const tabs = [...document.querySelectorAll('[role="tab"]')];
+    const posterPanel = document.getElementById('poster-panel');
+    const setlistPanel = document.getElementById('setlist-panel');
+    const infoPanel = document.getElementById('info-panel');
+    const READYSETGO = 1;
+    infoPanel.dataset.published = String(READYSETGO);
+    const teamStrip = document.getElementById('team-strip');
+    const songDescription = document.getElementById('song-description');
+    let selectedTeam = 1;
+    const songTitles = ['CAPTIWALL', '0의시간', 'SEXY BOY', '낯선 옷', '잔상 (AFTERIMAGE)', 'GOING ON', 'BEYOND RECALL', 'TOO LATE', 'GOOD NEWS'];
+    const songAuthors = ['신우진', '비둘기22 (박하 & 나서연)', '추동화, 안겸재', '박찬솔', '주하오린', '황희문', '루원', '강소희', '김은찬'];
+    const songThemes = ['사람과 사람의 경계', '삶과 죽음의 경계', '모범생과 문제아의 경계', '어른과 아이의 경계', '꿈과 현실의 경계', '익숙함과 새로움의 경계', '찰나와 영원의 경계', '사랑과 우정의 경계', '신과 인간의 경계'];
+    function showTeam(team) {
+      const previousTeam = selectedTeam;
+      if (team === previousTeam && songDescription.childElementCount) return;
+      selectedTeam = team;
+      const part = Math.ceil(team / 3);
+      const subtitles = [
+        ['인간의 의도', '인간의 구현'],
+        ['인간의 의도', '인공지능의 구현'],
+        ['인공지능의 의도', '인간의 구현']
+      ][part - 1];
+      infoPanel.dataset.part = String(part);
+      infoPanel.dataset.team = String(team);
+      teamStrip.querySelectorAll('button').forEach(button => {
+        button.setAttribute('aria-pressed', String(Number(button.dataset.team) === team));
+      });
+      teamStrip.querySelector(`[data-team="${team}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      songDescription.scrollTop = 0;
+      const teamCopy = team === 1 ? `
+        <h2>${subtitles[0]}</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>작품의 출발점은 뭐야?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>현대 사회에서 점점 심해지는 사람과 사람 사이의 경계에 대한 질문에서 시작합니다. 경계는 서로를 구분하고 보호해주지만, 너무 견고해지면 연결을 막고 사람을 고립시킬 수도 있어요.</p><p>서로 연결되어 살아가면서도 타인을 경계하고 각자의 내면으로만 파고들 때, 사회 전체가 혼란으로 향하는 모습을 담아보세요.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>CAPTIWALL이라는 제목에는 어떤 뜻을 담을까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>CAPITAL(자본)과 WALL(벽)을 합친 말로, 자본과 사회 구조가 만드는 보이지 않는 벽을 뜻합니다. 개인 사이의 단절뿐 아니라 사회의 구조도 사람들을 구분 짓는 경계가 될 수 있다는 의미를 담습니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>가사에서는 어떤 모순을 이야기할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>교육과 기회의 불평등, 성차별, 종교와 과학에 대한 맹목적 믿음, 편견과 위선을 다뤄보세요. 낯선 것을 두려워해 배척하고 문제를 외면하면서 타인에게만 변화를 요구하는 태도도 비판할 수 있어요.</p><p>후반부의 반복적이고 거친 표현으로 권력과 돈, 허세와 위선이 뒤섞인 사회에서 인간관계가 왜곡되는 모습을 풍자합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>이 작품이 관객에게 남길 질문은?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>경계가 모두 사라져야 한다고 말하기보다, 자신을 보호하는 선이 지나치게 강해질 때 생기는 단절과 혼란을 보여주세요.</p><p>“우리가 스스로 쌓아 올린 이 벽들은 과연 허물어질 수 있을까, 아니면 결국 더 높은 벽을 만들어가게 될까?”라는 질문을 남깁니다.</p></div>
+        </div>
+        <h2>${subtitles[1]}</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>곡의 사운드는 어떤 방식으로 만들었어?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>UK Bass, Breakbeat, Ambient를 섞은 비정형적이고 실험적인 사운드를 사용했어요. 정해진 송폼에서 벗어나 예측하기 어려운 리듬과 이질적인 소리를 배치했고, 진행될수록 불안정함과 긴장감을 키웠습니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>곡의 앞부분과 A 파트에서는 어떤 변화가 일어나?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p><strong>Intro · 연결</strong><br>경계가 생기기 전의 상태를 베이스와 앰비언스 중심으로 표현합니다. 영상에는 인간의 태생적 본질과 종교적 요소를 담아 사람들을 이어온 공통의 믿음을 보여줍니다.</p><p><strong>A · 분리와 충돌</strong><br>보컬과 리듬이 들어오며 분위기가 바뀝니다. 서로 다른 사운드와 불규칙한 리듬으로 경계가 만들어지고 깊어지는 과정을 표현하고, B 파트 직전에는 약 4초간 이질적인 소리를 넣어 현실이 무너지는 순간을 연출합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>B 파트와 무대에서는 그 고립을 어떻게 보여줄까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p><strong>B · 혼돈과 고립</strong><br>Breakbeat를 중심으로 사운드를 더 불안정하게 만들고, 타인과 연결을 잃어 자기 안에 갇힌 상태를 표현합니다. 영상은 구체적인 서사 대신 그래픽 모션과 비주얼라이저로 혼란스러운 내면을 그립니다.</p><p>무대에서는 연주자 한 명이 중앙에 홀로 서서 MacBook, 소형 마스터 건반, 이펙터를 조작합니다. 예측하기 어려운 음악 전개와 혼자 연주하는 모습을 통해 통제할 수 없는 사회 속 개인의 고립을 보여줍니다.</p></div>
+        </div>` : team === 2 ? `
+        <h2>${subtitles[0]}</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>삶과 죽음의 경계를 어떤 음악적 장치로 표현할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>심장박동 수, 즉 BPM이 변하는 흐름을 중심에 두고 삶과 죽음을 표현해 보세요.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>왜 탱고를 선택했어?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>탱고는 아르헨티나 빈민가의 하층민 남성들이 외로움과 슬픔, 공허함을 달래기 위해 여성과 춤추며 만들어진 장르입니다. 그 뿌리에 있는 ‘마음의 죽음’을 곡에 가져와 죽음의 향기를 탱고로 완성해 보세요.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>이 곡을 통해 어떤 질문을 던지고 싶어?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>사람은 무엇을 위해 살고, 어떤 가치를 향해 나아갈까요? 삶에서 추구하는 것의 본질을 돌아보게 해주세요.</p><p>“삶과 죽음은 마음의 상태에서 시작됩니다. 당신의 마음은 어떠한가요?”라는 질문을 남깁니다.</p></div>
+        </div>
+        <h2>${subtitles[1]}</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>음악에서는 이 삶과 죽음의 흐름을 어떻게 구현했어?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>죽음의 지점인 가장 느린 상태에서 시작해 BPM을 단계적으로 높이며 삶을 향해 나아갑니다. 삶에 도달한 후반부에는 BPM을 다시 늦춰 평안을 표현합니다.</p></div>
+        </div>` : team === 3 ? `
+        <h2>${subtitles[0]}</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>‘경계’라는 주제를 어떤 모습으로 풀어낼까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>한 사람 안에 함께 존재하는 모범생과 문제아의 모습으로 해석해 보세요. 평소에는 규칙을 지키고 감정을 절제하지만, 여러 사람을 만나면서 원칙을 깨고 충동적인 모습을 드러내는 이야기입니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>두 모습 사이의 경계는 어떤 순간에 드러날까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>규칙과 일탈, 절제와 충동의 대비를 통해 한 사람 안의 심리적 경계를 보여주세요. 특정한 상대를 만나 지켜온 선을 넘고, 숨겨진 또 다른 자아를 발견하는 과정입니다.</p><p>가사에는 ‘Straight A’, ‘play it safe’, ‘breaking my rules’, ‘no brakes’를 넣어 두 모습의 차이를 강조할 수 있습니다.</p></div>
+        </div>
+        <h2>${subtitles[1]}</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>메인 루프와 전체 편곡은 어떤 방식으로 구현했어?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>상징적인 메인 루프를 곡 전체에 반복해 규칙적이고 통제된 모습을 표현했습니다. 구간마다 사운드를 조금씩 바꾸며 내면의 변화도 함께 드러냈습니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>리듬과 악기는 어떻게 구성했어?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>120 BPM의 일정한 그루브 위에 드럼, 베이스, 메인 신스를 간결하게 배치했습니다. 송폼에 따라 드럼의 밀도와 베이스 움직임을 달리해 긴장감을 만들었습니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>화성과 보컬로 두 모습을 어떻게 구분했어?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>F minor를 중심으로 모달 인터체인지를 사용해 신비롭고 긴장감 있는 분위기를 만들었습니다. 벌스는 절제된 보컬로, 코러스는 자신감 있고 도발적인 보컬과 반복적인 후크로 표현했습니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>결국 곡에서 가장 강조하고 싶은 건 뭐야?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>반복되는 루프는 겉으로 드러난 규칙과 통제를, 그 안의 작은 음악적 변화는 숨겨진 충동과 일탈을 상징합니다. 모범생과 문제아가 한 사람 안에 공존하다가 특정한 계기로 경계가 무너지는 순간을 담았습니다.</p></div>
+        </div>` : team === 4 ? `
+        <h2>인간의 의도</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>이번 곡에서 다루고 싶은 주제가 뭐야?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>한 사람 안에 어른과 아이가 함께 있다는 이야기를 중심에 두면 좋겠습니다. 어른이 된 뒤에도 미숙하고 불확실하며 서툰 내면은 남아 있다는 점을 보여주세요.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>어떤 감정과 질문을 담을까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>‘우리는 언제부터 어른이 되었을까?’라는 질문을 따라가며, 따뜻하고 청춘적인 분위기 안에 아련한 향수와 은은한 그리움을 담아보세요.</p></div>
+        </div>
+        <h2>인공지능 프롬프트 원문</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>장르는 어떤 느낌으로 갈까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · English Original</span><p>Korean indie rock / Midtempo rock. Male vocals.</p><p><strong>한국어</strong><br>한국 인디 록과 미드템포 록을 기반으로 하며, 남성 보컬을 중심으로 구성한다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>템포, 조성, 박자는 어떻게 정할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · English Original</span><p>Exactly 87 BPM throughout the entire song. Never change tempo. Eb Major and 4/4 time signature are fixed and must never be changed.</p><p><strong>한국어</strong><br>곡 전체의 템포는 87 BPM으로 고정하고 어떠한 변화도 허용하지 않는다. 조성은 E♭ Major, 박자는 4/4로 곡 전체에서 유지한다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>어른과 아이의 주제는 어떤 정서로 표현할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · English Original</span><p>An adult and a child coexist within one person. Even after growing up, we remain immature, uncertain, and clumsy. Express “When did I become an adult?” with warm, youthful, nostalgic, slightly wistful emotions.</p><p><strong>한국어</strong><br>한 사람 안에 어른과 아이가 공존하며, 어른이 된 뒤에도 미숙하고 불확실하고 서툰 내면이 남아 있다. ‘우리는 언제부터 어른이 되었을까?’라는 질문을 따뜻하고 청춘적이며 아련한 정서로 표현한다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>악기는 어떻게 구성할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · English Original</span><p>Electric guitar, acoustic guitar, main piano, second piano (pad, FX), drums, electric bass.</p><p><strong>한국어</strong><br>일렉트릭 기타, 어쿠스틱 기타, 메인 피아노, 세컨 피아노(패드, FX), 드럼, 일렉트릭 베이스를 사용한다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>곡의 순서는 어떻게 할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · English Original</span><p>Intro – Verse 1 – Pre-Chorus – Chorus – Verse 2 – Chorus – Bridge – Final Chorus.</p><p><strong>한국어</strong><br>인트로 – 벌스 1 – 프리코러스 – 코러스 – 벌스 2 – 코러스 – 브릿지 – 파이널 코러스 순서로 진행한다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>보컬과 다이내믹은 어떻게 가져갈까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · English Original</span><p>Vocals MUST start in Verse 1 and continue naturally throughout the song. Keep the verse quiet with a developing guitar riff, build gradually in the pre-chorus, then make the chorus explosive and energetic. Create clear dynamic contrasts and keep the final chorus powerful and emotional.</p><p><strong>한국어</strong><br>보컬은 벌스 1부터 시작해 곡 끝까지 자연스럽게 이어간다. 벌스는 차분하게 두고 기타 리프를 전개하며, 프리코러스에서 서서히 고조시킨 뒤 코러스에서 강한 에너지를 터뜨린다. 파트마다 다이내믹을 뚜렷하게 나누고 파이널 코러스는 강렬하고 감정적으로 마무리한다.</p></div>
+        </div>` : team === 5 ? `
+        <h2>인간의 의도</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>‘꿈과 현실’의 경계를 음악으로 어떻게 표현하면 좋을까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>현실의 안정적이고 예측 가능한 성격과 꿈의 모호하고 자유로운 성격을 대비해 보세요. 두 세계를 나누기보다 음악이 진행되며 서로 자연스럽게 전환되고 섞이도록 합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>곡이 끝난 뒤 어떤 질문과 여운을 남길까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>현실이 꿈으로 스며들고 다시 교차하는 흐름으로 경계가 사라지는 경험을 만들고, “지금 우리가 경험하고 있는 것은 현실인가, 꿈인가?”라는 질문을 남겨보세요.</p></div>
+        </div>
+        <h2>인공지능 프롬프트 원문</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>현실이 꿈으로 스며들기 전, 인트로에서는 어떤 느낌을 만들까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · English Original</span><p>A single solo instrument playing a steady rhythm. We need a undeniable reality before break.</p><p><strong>한국어</strong><br>독주 악기 하나가 일정한 리듬을 연주하며, 균열이 시작되기 전 분명한 현실감을 만듭니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>벌스에서는 현실을, 프리코러스와 코러스에서는 경계가 흐려지는 순간을 어떻게 들려줄까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · English Original</span><p><strong>[Verse 1: Reality]</strong><br>Close-Mic Piano Chords, Tight Dry Rimshot Drum, Centered Solid Bass.</p><p><strong>[Pre-Chorus: Fissure]</strong><br>Subtle Tempo Shift, Hazy and Soft Delay Piano, Sliding Bass.</p><p><strong>[Chorus: Convergence]</strong><br>Full House Band Expansion, Resonant Mid-Tempo Drums, Smooth Grooving Bass, Cinematic Piano Melodies.</p><p><strong>한국어</strong><br>현실은 가까이 마이킹한 피아노 코드와 건조한 림샷, 단단한 베이스로 선명하게 표현합니다. 프리코러스에서는 미묘한 템포 변화와 흐릿한 딜레이 피아노, 슬라이딩 베이스로 경계를 녹입니다. 코러스에서는 풀 밴드와 영화적인 피아노 선율로 감정을 크게 확장합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>꿈과 혼돈, 마지막 질문은 어떤 소리로 남길까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · English Original</span><p><strong>[Verse 2: Dream State]</strong><br>Floating Hazy Rhythm. Capture the weightless, illogical, and mysterious freedom of the dream world.</p><p><strong>[Bridge: Chaos &amp; Dissolution]</strong><br>Gentle Surreal Chaos, Interweaving Piano Lines. Lose realistic senses completely as fragmented ideas and chaos intertwine.</p><p><strong>[Outro: Think]</strong><br>Single Solitary Piano Note, Fade Out. “Is this moment a dream or reality?”</p><p><strong>한국어</strong><br>부유하고 흐릿한 리듬으로 무중력적이고 비논리적인 꿈의 자유를 담습니다. 브릿지에서는 초현실적인 혼돈과 얽히는 피아노 선율로 현실 감각을 해체하고, 아웃트로는 홀로 남은 피아노 한 음을 페이드아웃하며 “지금 이 순간은 꿈인가, 현실인가?”라는 질문을 남깁니다.</p></div>
+        </div>` : team === 6 ? `
+        <h2>인간의 의도</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>제가 익숙하게 들어온 음악의 특징을 이번 곡의 출발점으로 삼고 싶어요. 어떤 점을 살펴보면 좋을까요?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>중국 발라드에서 자주 쓰이는 화성 진행과 표현 방식, 악기 구성과 편곡의 유사성을 살펴볼 수 있습니다. 예를 들면 IV - V - III - VI - II - V - I 같은 진행이 익숙한 틀로 작동합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>익숙한 방식을 벗어나고 싶은 마음은 어떻게 설명할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>그 음악들이 잘못된 것은 아니지만, 비슷한 음악을 오래 들으면 창작할 때도 자연스럽게 익숙한 방식에 기대게 될 수 있습니다. 그 사실을 알아차린 순간을 변화의 시작으로 삼아보세요.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>한국에서 새롭게 배운 경험은 곡에 어떻게 담을까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>새로운 음악과 지식을 기존의 경험과 결합해 보세요. 익숙한 팝의 화성과 멜로디 위에 새로운 전자음악 사운드와 편곡을 더하면, 과거의 경험이 사라지지 않고 또 다른 형태로 이어지는 흐름을 표현할 수 있습니다.</p></div>
+        </div>
+        <h2>인공지능 프롬프트 원문</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>익숙한 음악에서 출발해 새로운 전자음악으로 변화하는 곡을 만들고 싶어요. 장르와 기본 조건을 정해줄래요?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>Synthpop + R&amp;B에서 출발해 현대 일렉트로닉 팝과 얼터너티브 R&amp;B로 확장해 보세요. 109 BPM, 전곡 여성 리드 보컬로 두고, 미디 키보드·기타·베이스·드럼을 중심에 놓은 뒤 독창적인 전자 음색을 더합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>처음에는 어떤 분위기로 시작할까요? <strong>[First Half]</strong></p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>몽환적이고 감각적인 분위기를 바탕으로 따뜻하고 친숙하게 시작합니다. 멜로디는 자연스럽게 스며들고, 부드러운 설렘과 은은한 그리움을 불러일으킵니다. 다만 익숙함 속에 설명하기 어려운 낯선 감정을 희미하게 남겨둡니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>곡 중간에는 어떻게 전환할까요? <strong>[Transition: 1:25–2:10]</strong></p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>익숙했던 세계에 미묘한 균열을 만듭니다. 편안함은 불안정해지고, 아름답던 풍경은 현실과 조금씩 어긋납니다. 익숙함과 낯섦이 겹치며 근본적인 변화가 다가오는 느낌을 키웁니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>후반부는 어떤 세계로 나아가면 좋을까요? <strong>[Second Half: 2:10–End]</strong></p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>처음의 세계에서 완전히 벗어나 낯선 공간으로 들어갑니다. 시간과 리듬의 감각을 뒤틀고, 묵직한 서브베이스와 차갑고 금속적인 신스를 더해 아름다움과 불안이 공존하는 초현실적인 분위기를 만듭니다. 여성 보컬은 새로운 감정과 정체성을 드러내고, 음악은 익숙한 곳으로 돌아오지 않은 채 강렬하고 몽환적인 여운으로 끝납니다.</p></div>
+        </div>` : team === 7 ? `
+        <h2>인공지능의 의도</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>찰나와 영원을 주제로 곡을 만들고 싶어. 한순간의 의미가 오래 남는 감정을 어떻게 풀어볼까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>찰나의 시간이 영원이 되는 것이 아니라, 찰나의 의미가 영원이 될 수 있다는 생각에서 출발해 보세요. 한순간은 짧지만 기억과 감정을 통해 마음속에 오래 지속될 수 있습니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>이 주제를 어떤 장르와 템포로 표현하면 좋을까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>Alternative Pop과 Ambient Electronic을 결합하고, 4/4박자 84 BPM을 바탕으로 해보세요. 반복되는 멜로디와 모티프, 지속음과 리버브, 전자 음색을 활용하면 몽환적이고 절제된 분위기를 만들 수 있습니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>곡의 구성과 모티프는 어떻게 잡을까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>Intro – Verse – Verse’ – Pre-Chorus – Chorus – Bridge – Chorus 2 – Outro 순으로 구성해 보세요. ‘찰나’를 상징하는 간결하고 반복적인 Motif A와 ‘의미’를 상징하는 Motif B를 두고, 곡이 진행되며 반복·변형하면 한순간이 깊은 의미로 이어지는 흐름을 만들 수 있습니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>가사와 전체 정서는?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>기억과 시간, 변화 속에 남는 감정을 중심에 두세요. 일상과 기억이 희미해져도 과거의 감정은 남을 수 있다는 생각을 담고, 명확한 답보다 질문을 이어가며 사라짐과 남아 있음 사이의 여운을 표현해 보세요. 큰 화성 변화보다 음색과 공간감, 사운드의 층위와 리듬 밀도를 중심으로 정서를 전개합니다.</p></div>
+        </div>
+        <h2>인간의 구현</h2>
+        <p>AI와의 대화에서 구체화된 구상을 실제 음악으로 옮겼다. 멜로디와 두 모티프를 만들고 곡 안에서 반복·변형했으며, 지속음과 리버브 테일, 전자 음색을 쌓아 공간감과 사운드의 층위를 구현했다.</p>
+        <p>편곡 과정에서는 밴드 멤버들과 협의해 악기 구성과 각 파트의 표현 방식을 조정했다. AI가 제안한 창작 구상이 인간의 음악적 실천을 거쳐 작품으로 완성되는 과정을 담았다.</p>` : team === 8 ? `
+        <h2>인공지능의 의도</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>‘사랑과 우정의 갈등, 그 사이 경계’를 주제로 곡을 쓸 거야. 내가 제시하는 카테고리에 맞춰 음악적·예술적 의도를 정해줘.</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>좋아요. 장르, 송폼, 템포, 코드, 보컬과 악기, 가사 주제와 제목 순서로 제안할게요.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>Q1. 어떤 장르로 할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>Neo-Soul / Alternative R&amp;B로 결정합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>Q2. 곡의 송폼 및 구조는 어떻게 할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>Intro – Verse 1 – Pre-Chorus – Chorus – Verse 2 – Pre-Chorus – Chorus – Bridge – Chorus – Outro의 표준적인 R&amp;B 송폼 구조로 결정합니다. 전체 길이는 4분 내외로 합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>Q3. 템포는 어떻게 할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>90 BPM, 4/4박자의 laid-back feel로 결정합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>Q4. 코드 진행은 어떻게 갈까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p><strong>Verse · 익숙한 온기와 미세한 떨림</strong><br>| DbM7 | Fm7 | Bbm7 | Ebm7 Ab7 |</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · 이어서</span><p><strong>Pre-Chorus · 선을 넘어서는 긴장과 번뇌 (Modal Interchange)</strong><br>| Gm7(b5) | Gbm6 | Fm7 | Bbm7 Ebm7 | | GbM7 | Ab/Gb | Ebm7 | F7(b9) |</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · 이어서</span><p><strong>Chorus · 감정의 폭발과 아슬아슬한 경계</strong><br>| Ebm7 | Ab7 | Fm7 | Bbm7 | Ebm7 | F7(b9) | Bbm7 | Db7 |<br>| GbM7 | Ab7/Gb | Fm7 | Bbm7 | Ebm7 | Ebm7/Ab | DbM7 | Db7 |</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI · 이어서</span><p><strong>Bridge · 격렬한 자아의 충돌 (Maximum Tension)</strong><br>| Gm7(b5) | C7(b9) | Fm7 | Bb7(b13) | | Ebm7 | Ab7 | DbM7 | DbM7 |</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>Q5. 보컬 성별과 키는 어떻게 할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>보컬은 남녀 듀엣으로 하고, 키와 음역대는 D♭ Major로 결정합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>Q6. 악기는 어떻게 구성할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>Keyboards (Rhodes Ep), Aux Keys (Atmospheric pad), Electric Bass, Electric Guitar, Drums, Percussions로 구성합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>Q7. 가사의 메인 테마와 키워드는 어떻게 갈까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>메인 테마는 ‘선(Line)의 붕괴와 지연된 고백’으로, 핵심 키워드는 ‘1초의 정적’, ‘오류’, ‘안전지대’로 결정합니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>Q8. 곡 제목은 어떻게 할까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>90 BPM의 힙하고 끈적한 그루브에 어울리는 영문 제목, <em>Too Late</em>를 추천합니다.</p></div>
+        </div>` : team === 9 ? `
+        <h2>인공지능의 의도</h2>
+        <div class="ai-chat">
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>‘신과 인간의 경계’를 주제로 음악을 만들고 싶어. 작품의 큰 흐름을 제안해줘.</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>개혁주의 신학을 바탕으로 창조, 타락, 방황, 성육신, 회복의 다섯 장면을 따라가 보세요. 각 장면의 정서에 맞춰 장르와 악기 구성을 달리하면 경계의 의미를 음악으로 드러낼 수 있습니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>각 장면은 어떤 소리로 표현하면 좋을까?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p><strong>창조</strong>에서는 인간의 존엄과 피조물의 한계를 보여주고, <strong>타락</strong>에서는 신의 자리에 오르려는 인간의 욕망을 강렬한 록 사운드로 표현해 보세요.</p><p><strong>방황</strong>은 악기와 소리를 절제해 단절과 고독을 드러내고, <strong>성육신</strong>은 음악을 점진적으로 확장해 인간에게 다가오는 하나님의 은혜를 표현할 수 있습니다.</p><p><strong>회복</strong>에서는 창조의 음악적 정서를 다시 불러오되, 앞선 장면을 거치며 달라진 요소들을 더해 보세요. 단순한 원점 회귀가 아니라 은혜를 통한 새로운 회복이 됩니다.</p></div>
+          <div class="chat-message chat-human"><span class="chat-speaker">HUMAN</span><p>다섯 장면이 하나의 작품으로 이어지게 하려면?</p></div>
+          <div class="chat-message chat-ai"><span class="chat-speaker">AI</span><p>공통된 선율 동기를 두고, 장면마다 형태와 악기, 분위기를 바꾸어 다시 등장시키면 전체의 통일성을 유지하면서 각 장면의 변화를 함께 들려줄 수 있습니다.</p></div>
+        </div>
+        <h2>인간의 구현</h2>
+        <p>작품 전체를 관통하는 주제 선율을 변형하고 발전시켜, 서로 다른 분위기의 다섯 파트를 자연스럽게 연결했다. 창조에서는 광활한 세계를 떠올리는 선율과 독창·합창의 주고받기로 창조주와 피조물의 경계를 표현했다. 타락에서는 하행 주제 선율을 뒤집어 하늘에 닿으려는 인간의 호기심과 교만을 나타냈다.</p>
+        <p>방황에서는 침묵과 나레이션으로 불안과 고독을 드러내고, 성육신에서는 주제 선율을 이루는 음을 바꾸어 예수님이 인간의 몸으로 오신 의미를 담았다. 회복에서는 처음의 선율을 얼터너티브 록과 결합해 하나님과 인간의 연합을 표현했다.</p>
+        <p>반복되는 선율을 따라 경계의 의미를 생각해 보고, 좋고 나쁨을 나누는 선을 넘어서는 경험이 되기를 바란다.</p>` : `
+        <h2>${subtitles[0]}</h2>
+        <p>${part}부 ${((team - 1) % 3) + 1}팀의 곡 설명이 들어갈 자리입니다. 이 곡을 처음 떠올렸을 때의 장면과 감정, 그리고 그 생각이 어떤 소리로 이어졌는지를 소개합니다.</p>
+        <p>곡을 시작하게 한 생각과 표현하고 싶었던 감각을 이곳에 적어주세요. 어떤 이야기를 전하고 싶었는지, 그 마음이 곡의 분위기와 흐름에 어떻게 담겼는지 들려줍니다.</p>
+        <h2>${subtitles[1]}</h2>
+        <p>멜로디가 시작되고 각 파트가 차례로 더해지면서 곡의 풍경도 조금씩 변합니다. 잠시 머물렀다가 멀어지는 소리, 서로 다른 방향에서 만나 하나의 흐름을 만드는 연주를 따라가며 들어주세요.</p>
+        <p>무대 위에서 이 곡이 여러분 각자의 기억과 만나 또 다른 이야기가 되기를 바랍니다. 들어주셔서 감사합니다.</p>`;
+      songDescription.innerHTML = `
+        <article>
+          <div class="song-heading"><p class="song-kicker">제12회 작곡의 밤 · ${part}부</p><span class="song-hint" aria-label="좌우로 슬라이드해 팀 이동">← 좌우로 넘겨보기 →</span></div>
+          <h1>${songTitles[team - 1]}</h1>
+          <p class="song-by">by ${songAuthors[team - 1]}</p>
+          <p class="song-theme">${songThemes[team - 1]}</p>
+          <div class="song-copy">
+            ${teamCopy}
+          </div>
+        </article>`;
+      const direction = team > previousTeam ? 1 : -1;
+      songDescription.firstElementChild.animate(
+        [
+          { transform: `translateX(${direction * 36}px)`, opacity: 0.35 },
+          { transform: 'translateX(0)', opacity: 1 }
+        ],
+        { duration: 280, easing: 'cubic-bezier(.2,.75,.25,1)' }
+      );
+    }
+    for (let team = 1; team <= 9; team++) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'team-button';
+      button.dataset.team = String(team);
+      button.setAttribute('aria-pressed', 'false');
+      button.textContent = `${Math.ceil(team / 3)}부 ${((team - 1) % 3) + 1}팀`;
+      button.addEventListener('click', () => showTeam(team));
+      teamStrip.append(button);
+    }
+    showTeam(selectedTeam);
+    let swipeStart = null;
+    songDescription.addEventListener('pointerdown', event => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      swipeStart = { x: event.clientX, y: event.clientY };
+    });
+    songDescription.addEventListener('pointerup', event => {
+      if (!swipeStart) return;
+      const deltaX = event.clientX - swipeStart.x;
+      const deltaY = event.clientY - swipeStart.y;
+      swipeStart = null;
+      if (Math.abs(deltaX) < 55 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
+      showTeam(Math.max(1, Math.min(9, selectedTeam + (deltaX < 0 ? 1 : -1))));
+    });
+    songDescription.addEventListener('pointercancel', () => { swipeStart = null; });
+    let trackpadDelta = 0;
+    let trackpadLocked = false;
+    let trackpadResetTimer;
+    songDescription.addEventListener('wheel', event => {
+      const horizontalDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : (event.shiftKey ? event.deltaY : 0);
+      if (!horizontalDelta) return;
+      event.preventDefault();
+      if (trackpadLocked) return;
+      trackpadDelta += horizontalDelta;
+      clearTimeout(trackpadResetTimer);
+      trackpadResetTimer = setTimeout(() => { trackpadDelta = 0; }, 180);
+      if (Math.abs(trackpadDelta) < 45) return;
+      showTeam(Math.max(1, Math.min(9, selectedTeam + (trackpadDelta > 0 ? 1 : -1))));
+      trackpadDelta = 0;
+      trackpadLocked = true;
+      setTimeout(() => { trackpadLocked = false; }, 520);
+    }, { passive: false });
+    function selectTab(tab) {
+      tabs.forEach(item => {
+        const selected = item === tab;
+        item.setAttribute('aria-selected', String(selected));
+        item.tabIndex = selected ? 0 : -1;
+      });
+      const showPoster = tab.id === 'tab-poster';
+      const showInfo = tab.id === 'tab-info';
+      posterPanel.classList.toggle('active', showPoster);
+      posterPanel.hidden = !showPoster;
+      setlistPanel.classList.toggle('active', !showPoster && !showInfo);
+      setlistPanel.hidden = showPoster || showInfo;
+      infoPanel.classList.toggle('active', showInfo);
+      infoPanel.hidden = !showInfo;
+    }
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => selectTab(tab));
+      tab.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        event.preventDefault();
+        const offset = event.key === 'ArrowRight' ? 1 : -1;
+        const next = tabs[(index + offset + tabs.length) % tabs.length];
+        selectTab(next);
+        next.focus();
+      });
+    });
+  </script>
+</body>
+</html>
