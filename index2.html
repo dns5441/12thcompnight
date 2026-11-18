@@ -193,6 +193,7 @@
       teamStrip.querySelectorAll('button').forEach(button => {
         button.setAttribute('aria-pressed', String(Number(button.dataset.team) === team));
       });
+      teamStrip.querySelector(`[data-team="${team}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       songDescription.scrollTop = 0;
       const teamCopy = team === 1 ? `
         <h2>${subtitles[0]}</h2>
